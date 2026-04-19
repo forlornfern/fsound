@@ -30,6 +30,18 @@ func Execute(model *Fsound) (*Fsound, error) {
 }
 
 func (f *Fsound) Init() tea.Cmd {
+	for _, path := range f.PlaylistPaths {
+		playlist, err := newPlaylist(path)
+		if err != nil {
+			f.err = err
+			return tea.Quit
+		}
+		f.playlists = append(f.playlists, playlist)
+	}
+	f.player, f.err = vlc.NewPlayer()
+	if f.err != nil {
+		return tea.Quit
+	}
 	return nil
 }
 
