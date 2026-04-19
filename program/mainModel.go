@@ -8,6 +8,7 @@ import (
 type Fsound struct {
 	PlaylistPaths []string `json:"playlist-paths"`
 	program       *tea.Program
+	playlists     []*playlist
 	player        *vlc.Player
 	width, height int
 	err           error
