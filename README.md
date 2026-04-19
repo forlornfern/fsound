@@ -1,0 +1,3 @@
+### dependencies
+* vlc
+* libvlc
