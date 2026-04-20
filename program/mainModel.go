@@ -52,6 +52,9 @@ func (f *Fsound) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c", "q":
 			return f, tea.Quit
 		}
+	case tea.WindowSizeMsg:
+		f.width = msg.Width
+		f.height = msg.Height
 	}
 	return f, nil
 }
