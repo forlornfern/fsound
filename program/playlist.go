@@ -34,9 +34,9 @@ func newPlaylist(directory string) (*playlist, error) {
 		return nil, err
 	}
 	var mediaList []*vlc.Media
-	for _, file := range files {
-		if !file.IsDir() {
-			path := filepath.Join(directory, file.Name())
+	for _, p := range files {
+		if !p.IsDir() {
+			path := filepath.Join(directory, p.Name())
 			if isAudio(path) {
 				if media, err := vlc.NewMediaFromPath(path); err != nil {
 					continue
