@@ -1,17 +1,21 @@
 package program
 
 import (
+	"strings"
+
+	"charm.land/lipgloss/v2"
 	vlc "github.com/adrg/libvlc-go/v3"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 type Fsound struct {
-	PlaylistPaths []string `json:"playlist-paths"`
-	program       *tea.Program
-	playlists     []*playlist
-	player        *vlc.Player
-	width, height int
-	err           error
+	PlaylistPaths         []string `json:"playlist-paths"`
+	program               *tea.Program
+	playlists             []*playlist
+	selectedPlaylistIndex int
+	player                *vlc.Player
+	width, height         int
+	err                   error
 }
 
 func Execute(model *Fsound) (*Fsound, error) {
@@ -51,6 +55,10 @@ func (f *Fsound) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "ctrl+c", "q":
 			return f, tea.Quit
+		case "up":
+			f.selectedPlaylistIndex = max(0, f.selectedPlaylistIndex-1)
+		case "down":
+			f.selectedPlaylistIndex = min(len(f.playlists)-1, f.selectedPlaylistIndex+1)
 		}
 	case tea.WindowSizeMsg:
 		f.width = msg.Width
@@ -60,5 +68,22 @@ func (f *Fsound) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (f *Fsound) View() string {
-	return ""
+	themeStyle := lipgloss.NewStyle().
+		Foreground(lipgloss.White).
+		Background(lipgloss.Black).
+		BorderForeground(lipgloss.White).
+		BorderBackground(lipgloss.Black)
+	borderStyle := themeStyle.BorderStyle(lipgloss.RoundedBorder())
+
+	var sb strings.Builder
+	for i, pl := range f.playlists {
+		if i == f.selectedPlaylistIndex {
+			sb.WriteRune('>')
+		}
+		sb.WriteString(pl.name + "\n")
+	}
+
+	playlistPanel := borderStyle.Width(f.width / 3).Height(f.height).Render(sb.String())
+
+	return playlistPanel
 }
