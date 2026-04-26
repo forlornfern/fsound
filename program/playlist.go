@@ -9,9 +9,10 @@ import (
 )
 
 type playlist struct {
-	name      string
-	location  string
-	mediaList []*vlc.Media
+	name               string
+	location           string
+	selectedMediaIndex int
+	mediaList          []*vlc.Media
 }
 
 var audioExts = map[string]bool{
